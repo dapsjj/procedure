@@ -497,11 +497,21 @@ namespace NewTimeCard
                     ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox53"]).Text = ds.Tables[0].Rows[0]["中途の年"].ToString();
                     ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox54"]).Text = ds.Tables[0].Rows[0]["中途の月"].ToString();
                     ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox55"]).Text = ds.Tables[0].Rows[0]["中途の日"].ToString();
-                                    
-                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox56"]).Text = ds.Tables[0].Rows[0]["受給者生年明"].ToString();
-                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox57"]).Text = ds.Tables[0].Rows[0]["受給者生年大"].ToString();
-                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox58"]).Text = ds.Tables[0].Rows[0]["受給者生年昭"].ToString();
-                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox59"]).Text = ds.Tables[0].Rows[0]["受給者生年平"].ToString();
+
+                    //2019/04/20 10113982 宋家軍 抹消 begin
+                    //((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox56"]).Text = ds.Tables[0].Rows[0]["受給者生年明"].ToString();
+                    //((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox57"]).Text = ds.Tables[0].Rows[0]["受給者生年大"].ToString();
+                    //((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox58"]).Text = ds.Tables[0].Rows[0]["受給者生年昭"].ToString();
+                    //((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox59"]).Text = ds.Tables[0].Rows[0]["受給者生年平"].ToString();
+                    //2019/04/20 10113982 宋家軍 抹消 end
+
+                    //2019/04/20 10113982 宋家軍 増加 begin
+                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox56"]).Text = ds.Tables[0].Rows[0]["受給者生年大"].ToString();
+                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox57"]).Text = ds.Tables[0].Rows[0]["受給者生年昭"].ToString();
+                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox58"]).Text = ds.Tables[0].Rows[0]["受給者生年平"].ToString();
+                    ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox59"]).Text = ds.Tables[0].Rows[0]["受給者生年令"].ToString();
+                    //2019/04/20 10113982 宋家軍 増加 end
+
                     ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox60"]).Text = ds.Tables[0].Rows[0]["生年の年"].ToString();
                     ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox61"]).Text = ds.Tables[0].Rows[0]["生年の月"].ToString();
                     ((TextObject)rpt2016.ReportDefinition.ReportObjects["TextBox62"]).Text = ds.Tables[0].Rows[0]["生年の日"].ToString();
