@@ -1,18 +1,17 @@
 USE [dbEmployee]
 GO
 
-/****** Object:  StoredProcedure [dbo].[Salary_BaseInfoOut]    Script Date: 2019/04/17 15:26:15 ******/
+/****** Object:  StoredProcedure [dbo].[Salary_BaseInfoOut]    Script Date: 2019/04/16 13:56:22 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-
-
                  --************************************************* --  
 --  作成者　10004211　　作成日　2007/11/22      --  
-  
+--MODIFYBY:宋家軍
+--MODIFYDATE:2019/04/22(変更内容:令和年号の調整)  
 --  機能： 給与システムの給与明細ペーパーレス化について、給与支払基本情報取得    --  
 --exec Salary_BaseInfoOut '2011/09','1','3','1','107',14  
 --************************************************* --  
@@ -80,8 +79,9 @@ begin
 end  
   
   
-
-----------------SalaryItemInformation&&SalaryOutput_Attendance  出力定義（勤怠）項目名情報取得------------------   
+  
+----------------SalaryItemInformation&&SalaryOutput_Attendance  出力定義（勤怠）項目名情報取得------------------  
+  
 set @str1=(select case when convert(nvarchar,SalaryOutput_Attendance.item1) is null then '''''' else  'SalaryItemInformation.item'+convert(nvarchar,SalaryOutput_Attendance.item1) end  
 +case when convert(nvarchar,SalaryOutput_Attendance.item2) is null then ',''''' else  ',SalaryItemInformation.item'+convert(nvarchar,SalaryOutput_Attendance.item2) end  
 +case when convert(nvarchar,SalaryOutput_Attendance.item3) is null then ',''''' else  ',SalaryItemInformation.item'+convert(nvarchar,SalaryOutput_Attendance.item3) end  
@@ -127,13 +127,11 @@ where  SalaryOutput_Attendance.CompanyCode=@CompanyCode and  convert(varchar(7),
          and SalaryOutput_Attendance.EmployeeType=@EmployeeType and SalaryOutput_Attendance.SalaryType=@SalaryType)  
 if ((select @str1) is null)  
 begin  
---select 'str1_A'
-exec(@str1) 
+exec(@str1)  
 end  
 else  
 begin  
---select 'str1_B'
-exec( 'select '+@str1+' from #TempSalaryItemInformation SalaryItemInformation' ) 
+exec( 'select '+@str1+' from #TempSalaryItemInformation SalaryItemInformation' )  
 end  
   
   
@@ -185,12 +183,10 @@ where  SalaryOutput_Attendance.CompanyCode=@CompanyCode and  convert(varchar(7),
          and SalaryOutput_Attendance.EmployeeType=@EmployeeType and SalaryOutput_Attendance.SalaryType=@SalaryType)  
 if ((select @str2) is null)  
 begin  
---select 'str2_A'
 exec(@str2)  
 end  
 else  
 begin  
---select 'str2_B'
 exec('select '+@str2+' from #TempSalaryInformation SalaryInformation')  
 end  
   
@@ -247,12 +243,10 @@ where  SalaryOutput_Pay.CompanyCode=@CompanyCode and  convert(varchar(7),SalaryO
          and SalaryOutput_Pay.EmployeeType=@EmployeeType and SalaryOutput_Pay.SalaryType=@SalaryType)  
 if ((select @str3) is null)  
 begin  
---select 'str3_A'
 exec(@str3)  
 end  
 else  
 begin  
---select 'str3_B'
 exec( 'select '+@str3+' from #TempSalaryItemInformation SalaryItemInformation')  
 end  
   
@@ -310,13 +304,11 @@ from  SalaryOutput_Pay
 where  SalaryOutput_Pay.CompanyCode=@CompanyCode and  convert(varchar(7),SalaryOutput_Pay.PayYearMonth,111)=@YearMonth   
          and SalaryOutput_Pay.EmployeeType=@EmployeeType and SalaryOutput_Pay.SalaryType=@SalaryType)  
 if ((select @str4) is null)  
-begin 
---select 'str4_A' 
+begin  
 exec(@str4)  
 end  
 else  
-begin 
---select 'str4_B'  
+begin  
 exec('select '+@str4+' from #TempSalaryInformation SalaryInformation')  
 end  
   
@@ -369,13 +361,10 @@ where  SalaryOutput_Deduct.CompanyCode=@CompanyCode and  convert(varchar(7),Sala
          and SalaryOutput_Deduct.EmployeeType=@EmployeeType and SalaryOutput_Deduct.SalaryType=@SalaryType)  
 if ((select @str5) is null)  
 begin  
---select 'str5_A'
-print(@str5)
 exec(@str5)  
 end  
 else  
 begin  
---select 'str5_B'
 exec( 'select '+@str5+' from #TempSalaryItemInformation SalaryItemInformation')  
 end  
   
@@ -431,13 +420,10 @@ where  SalaryOutput_Deduct.CompanyCode=@CompanyCode and  convert(varchar(7),Sala
          and SalaryOutput_Deduct.EmployeeType=@EmployeeType and SalaryOutput_Deduct.SalaryType=@SalaryType)  
 if ((select @str6) is null)  
 begin  
---select 'str6_A' 
-print(@str6)
 exec(@str6)  
 end  
 else  
 begin  
---select 'str6_B' 
 exec('select '+@str6+' from #TempSalaryInformation SalaryInformation')  
 end  
   
@@ -460,12 +446,10 @@ where  SalaryOutput_Sum.CompanyCode=@CompanyCode and  convert(varchar(7),SalaryO
          and SalaryOutput_Sum.EmployeeType=@EmployeeType and SalaryOutput_Sum.SalaryType=@SalaryType)  
 if ((select @str7) is null)  
 begin  
---select 'str7_A' 
 exec(@str7)  
 end  
 else  
 begin  
---select 'str7_B' 
 exec( 'select '+@str7+' from #TempSalaryItemInformation SalaryItemInformation')  
 end  
   
@@ -495,12 +479,10 @@ where  SalaryOutput_Sum.CompanyCode=@CompanyCode and  convert(varchar(7),SalaryO
          and SalaryOutput_Sum.EmployeeType=@EmployeeType and SalaryOutput_Sum.SalaryType=@SalaryType)  
 if ((select @str8) is null)  
 begin  
---select 'str8_A' 
 exec(@str8)  
 end  
 else  
-begin
---select 'str8_B'   
+begin  
 exec('select '+@str8+' from #TempSalaryInformation SalaryInformation')  
 end  
   
@@ -508,13 +490,13 @@ end
   
   
 -----------------給与合計情報項目情報取得------------------  
---select 'str9' 
+  
 select  cast(sum(SalarySum) as int), cast(sum(TaxFreeSum) as int), cast(sum(SocialInsuranceSum) as int), cast(sum(TaxSum) as int)  
 from    SalarySumInformation  
 where  EmployeeManagementID = @EmployeeManagementID and   
          PayYearMonth>=LEFT(@YearMonthTemp,4)+'/01/01' and PayYearMonth<= @YearMonthTemp   
           and CompanyCode = @CompanyCode  
-
+  
   
 ------------------------------社員事業部情報取得--------------------------------------  
   
@@ -532,7 +514,6 @@ where  EmployeeManagementID = @EmployeeManagementID and
 -- when 20 then '(株)トライアルベーカリー'  --2200424 20150409
 -- when 21 then '(株)トライアル開発'  --2200424 20150409
 --end   
---select 'str10' 
 select Company_Name_short_OBIC  --2200424 20150807 add
 from mstCompanyName
 where Company_code_OBIC=@CompanyCode
@@ -542,7 +523,7 @@ where Company_code_OBIC=@CompanyCode
   
 ---------------------------------給与支給年月情報取得-----------------------------------  
 /*  
---2019/04/16 10113982 宋家軍 抹消 begin
+--2019/04/22 10113982 宋家軍 抹消 begin
 if @YearMonth>='1989/01'  
 begin  
 select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
@@ -551,30 +532,27 @@ else
 begin  
 select '昭和'+convert(varchar,substring(convert(varchar(4),@YearMonth),3,4)-25)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
 end  
---2019/04/16 10113982 宋家軍 抹消 end
+--2019/04/22 10113982 宋家軍 抹消 end
 */  
   
---2019/04/16 10113982 宋家軍 増加 begin
+--2019/04/22 10113982 宋家軍 増加 begin
 if @YearMonth>='2019/05'
 begin  
---select 'str11_A' 
 select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
 end 
 else if @YearMonth>='1989/01' and @YearMonth<='2019/04'
 begin  
---select 'str11_B' 
 select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
 end  
 else if @YearMonth>='1926/01' and @YearMonth<='1988/12'
 begin  
---select 'str11_C' 
 select '昭和'+convert(varchar,convert(varchar(4),@YearMonth)-1925)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
 end  
---2019/04/16 10113982 宋家軍 増加 end
+--2019/04/22 10113982 宋家軍 増加 end
 
 ---------------------------------給与支給年月日情報取得----------------------------------  
 /*
---2019/04/16 10113982 宋家軍 抹消 begin  
+--2019/04/22 10113982 宋家軍 抹消 begin  
 if @YearMonth>='1989/01'  
 begin  
   
@@ -616,35 +594,31 @@ begin
  --where  CompanyCode=@CompanyCode and  convert(varchar(7),PayYearMonth,111)=@YearMonth   
  --         and EmployeeType=@EmployeeType and SalaryType=@SalaryType and EmployeeManagementID = @EmployeeManagementID  
 end  
---2019/04/16 10113982 宋家軍 抹消 end
+--2019/04/22 10113982 宋家軍 抹消 end
 */  
 
 
---2019/04/16 10113982 宋家軍 増加 begin
+--2019/04/22 10113982 宋家軍 増加 begin
 if @YearMonth>='2019/05'  
 begin  
   
  if (@EmployeeType = '1' and @SalaryType = '1' and @YearMonth > '2011/07/01')  
  begin  
- --select 'str12_A'
   select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
   from #TempSalaryInformation SalaryInformation  
  end  
  else if  (@EmployeeType in (3) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
  begin  
- -- select 'str12_B'
   select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
   from #TempSalaryInformation SalaryInformation   
  end   
  else if  (@EmployeeType in (2) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
  begin  
- --select 'str12_C'
   select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item8 +'日'  
   from #TempSalaryInformation SalaryInformation  
  end   
  else  
  begin  
- --select 'str12_D'
   select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item6 +'日'  
   from #TempSalaryInformation SalaryInformation   
  end  
@@ -657,25 +631,21 @@ begin
   
  if (@EmployeeType = '1' and @SalaryType = '1' and @YearMonth > '2011/07/01')  
  begin  
-  --select 'str12_E'
   select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
   from #TempSalaryInformation SalaryInformation  
  end  
  else if  (@EmployeeType in (3) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
  begin  
- --select 'str12_F'
   select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
   from #TempSalaryInformation SalaryInformation   
  end   
  else if  (@EmployeeType in (2) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
  begin  
- --select 'str12_G'
   select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item8 +'日'  
   from #TempSalaryInformation SalaryInformation  
  end   
  else  
  begin  
- --select 'str12_H'
   select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item6 +'日'  
   from #TempSalaryInformation SalaryInformation   
  end  
@@ -684,23 +654,20 @@ end
 
 else  
 begin  
---select 'str12_I'
  select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item6 +'日'  
  from #TempSalaryInformation SalaryInformation  
 end  
---2019/04/16 10113982 宋家軍 増加 end
+--2019/04/22 10113982 宋家軍 増加 end
 
 --------------------------------------所属情報取得-----------------------------------------  
   
 begin  
 set @str9=('item'+@Affiliate)  
---select 'str13'
 exec('select '+@str9+' from     #TempSalaryInformation SalaryInformation ')  
 end  
 --------------------------------------累計項目の名前------朱国偉---2009/12/09--------------------------------  
   
-begin 
---select 'str14' 
+begin  
 select isnull(item1,'') as item1  
 ,isnull(item2,'') as item2  
 ,isnull(item3,'') as item3  
@@ -723,22 +690,18 @@ end
 -- when 20 then '株式会社 トライアルベーカリー'  --2200424 20150409
 -- when 21 then '株式会社 トライアル開発'  --2200424 20150409
 --end   
-
---select 'str15'
 select Company_Name_OBIC  --2200424 20150807 add
 from mstCompanyName
 where Company_code_OBIC=@CompanyCode
       
   
-  
-  
-  
-  
-  
-  
-  
 
-
+  
+  
+  
+  
+  
+  
 GO
 
 
