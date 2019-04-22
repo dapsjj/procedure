@@ -12,6 +12,8 @@ GO
 --***********************************************************************  
 --CREATEBY: liubaoshan  
 --CREATEDATE:2015/10/09  
+--MODIFYBY:宋家軍
+--MODIFYDATE:2019/04/22(変更内容:令和年号の調整)
 --REMARKS:年末調整２次から個人源泉徴収票・ 証明書用
 --exec Cert_Get_PersonalYearAjust 1129,1,1129,1  
 --***********************************************************************  
@@ -124,9 +126,121 @@ SET @SQL4 = ',OYAB.摘要1            AS ''摘要1''
                     -- ,OYAB.Abstract2            AS ''摘要2''  
                     -- ,OYAB.Abstract3            AS ''摘要3''  
                     -- ,CONVERT(VARCHAR(100),OYAB.Abstract2) + ''　'' + CONVERT(VARCHAR(100),OYAB.Abstract3) AS ''摘要3'''--OBIC_YearAbstract  
-  
+
+
+--2019/04/22 10113982 宋家軍 抹消 begin
+/*
 --五．特別処置欄  
                       --,CASE WHEN DATEDIFF( YEAR, CONVERT(DATETIME,OME.生年月日), GETDATE() ) < 18  
+SET @SQL5 = ',CASE WHEN DATEDIFF(DAY, (CONVERT(VARCHAR(4),(YEAR(''2012/12/01'') - 19))+ ''/01/03''),OME.生年月日) > 0   
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''未成年者''  
+ ,CASE WHEN ( (OYAA.年度 = 2010 and OYAA.税額表区分 = 2) or (OYAA.年度 >= 2011 and OYAA.税額表区分 = 1) )  
+                      THEN ''＊''  
+                      ELSE ''''  
+                      END                            AS ''乙欄''  
+-- ,CASE WHEN ( OME.本人障害者 = 1 AND OME.本人特別障害者 = 1 )  
+ ,CASE WHEN ( OME.対象者区分=1 and OME.本人特別障害者 = 1 )  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''本人が障害者の特別''  
+-- ,CASE WHEN ( OME.DisabilityFlag = 1 AND OME.SpecialDisabilityFlag = 0 )  
+ ,CASE WHEN (  OME.対象者区分=1 and OME.本人障害者 = 1 )  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''本人が障害者のその他''  
+--20101022  
+--  ,CASE WHEN ( OME.WidowFlag = 1 AND OME.SpecialWidowFlag = 0 )  
+ ,CASE WHEN ( OME.対象者区分=1 and  OME.本人寡婦 = 1)  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''寡婦の一般''  
+ ,CASE WHEN ( OME.対象者区分=1 and  OME.本人寡婦 = 2 )  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''寡婦の特別''  
+ ,CASE WHEN ( OME.対象者区分=1 and  OME.本人寡婦 = 3 )  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''寡夫''  
+ ,CASE WHEN ( OME.対象者区分=1 and  OME.本人勤労学生 = 1 )  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''勤労学生''  
+--  ,''''    AS ''死亡退職''  
+--  ,''''    AS ''災害者''  
+--  ,''''    AS ''外国人''  
+  
+ ,CASE WHEN ( OME.休職退職区分 = 0 AND OME.入社年月日 >= ''' + @YearStart + ''' and (OME.退職年月日 = '''' or OME.退職年月日 is null) )  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''就職''  
+ ,CASE WHEN (  (( OME.休職退職区分 = 2 and OME.年度=2010)  or(OME.退職年月日 <> '''' and OME.年度 >= 2011))  AND OME.入社年月日 <> ''''  )   
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''退職''  
+ ,CASE WHEN ( OME.休職退職区分 = 0 AND OME.入社年月日 >= ''' + @YearStart + ''' and (OME.退職年月日 = '''' or OME.退職年月日 is null)  )   
+  THEN substring(dbYearAjust.dbo.FN_Year_GetYear(OME.入社年月日),3,2)  
+  WHEN (  (( OME.休職退職区分 = 2 and OME.年度=2010)  or( OME.退職年月日 <> '''' and OME.年度 >= 2011)) AND OME.入社年月日 <> ''''  )   
+  THEN substring(dbYearAjust.dbo.FN_Year_GetYear(OME.退職年月日),3,2)  
+  ELSE ''''  
+  END   AS ''中途の年''  
+ ,CASE WHEN ( OME.休職退職区分 = 0 AND OME.入社年月日 >= ''' + @YearStart + '''  and (OME.退職年月日 = '''' or OME.退職年月日 is null) )  
+  THEN (CASE WHEN  CONVERT(VARCHAR,MONTH(OME.入社年月日)) < 10  
+                                        THEN (''0'' + CONVERT(VARCHAR,MONTH(OME.入社年月日)))  
+                                         ELSE CONVERT(VARCHAR,MONTH(OME.入社年月日))  END)  
+  WHEN (  (( OME.休職退職区分 = 2 and OME.年度=2010)  or( OME.退職年月日 <> '''' and  OME.年度 >= 2011)) AND OME.入社年月日 <> '''' )  
+  THEN (CASE WHEN CONVERT(VARCHAR,MONTH(OME.退職年月日)) < 10  
+                                         THEN (''0'' + CONVERT(VARCHAR,MONTH(OME.退職年月日)))  
+                                         ELSE CONVERT(VARCHAR,MONTH(OME.退職年月日))  END )  
+  ELSE ''　''  
+  END    AS ''中途の月''  
+ ,CASE WHEN ( OME.休職退職区分 = 0 AND OME.入社年月日 >= ''' + @YearStart + '''  and(OME.退職年月日 = '''' or OME.退職年月日 is null) )  
+  THEN (CASE WHEN CONVERT(VARCHAR,DAY(OME.入社年月日)) < 10  
+                                         THEN (''0'' + CONVERT(VARCHAR,DAY(OME.入社年月日)))  
+                                         ELSE CONVERT(VARCHAR,DAY(OME.入社年月日)) END)  
+  WHEN (  (( OME.休職退職区分 = 2 and OME.年度=2010)  or( OME.退職年月日 <> '''' and  OME.年度 >= 2011)) AND OME.入社年月日 <> '''' )  
+  THEN  ( CASE WHEN CONVERT(VARCHAR,DAY(OME.退職年月日)) < 10  
+                                          THEN (''0'' + CONVERT(VARCHAR,DAY(OME.退職年月日)))  
+                                          ELSE CONVERT(VARCHAR,DAY(OME.退職年月日)) END)  
+  ELSE ''　''  
+  END    AS ''中途の日''  
+  
+ ,CASE WHEN SUBSTRING(( dbYearAjust.dbo.FN_Year_GetYear(OME.生年月日)),1,1) = ''明'' --★  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''受給者生年明''  
+ ,CASE WHEN SUBSTRING(( dbYearAjust.dbo.FN_Year_GetYear(OME.生年月日)),1,1) = ''大'' --★  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''受給者生年大''  
+ ,CASE WHEN SUBSTRING(( dbYearAjust.dbo.FN_Year_GetYear(OME.生年月日)),1,1) = ''昭'' --★  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''受給者生年昭''  
+ ,CASE WHEN SUBSTRING(( dbYearAjust.dbo.FN_Year_GetYear(OME.生年月日)),1,1) = ''平'' --★  
+  THEN ''＊''  
+  ELSE ''''  
+  END   AS ''受給者生年平''  
+ ,SUBSTRING(dbYearAjust.dbo.FN_Year_GetYear(OME.生年月日),3,2) AS ''生年の年''  
+ ,CASE WHEN MONTH(OME.生年月日) < 10  
+                     THEN (''0'' + CONVERT(VARCHAR(2),MONTH(OME.生年月日)))  
+                     ELSE CONVERT(VARCHAR(2),MONTH(OME.生年月日))   
+                     END                             AS ''生年の月''  
+ ,CASE WHEN DAY(OME.生年月日) < 10  
+                     THEN (''0'' + CONVERT(VARCHAR(2),DAY(OME.生年月日)))  
+                     ELSE CONVERT(VARCHAR(2),DAY(OME.生年月日))  
+                     END                             AS ''生年の日'''   
+*/
+
+--2019/04/22 10113982 宋家軍 抹消 end
+
+
+--2019/04/22 10113982 宋家軍 増加 begin
+--五．特別処置欄  
+                      --,CASE WHEN DATEDIFF( YEAR, CONVERT(DATETIME,OME.生年月日), GETDATE() ) < 18  
+
 SET @SQL5 = ',CASE WHEN DATEDIFF(DAY, (CONVERT(VARCHAR(4),(YEAR(''2012/12/01'') - 19))+ ''/01/03''),OME.生年月日) > 0   
   THEN ''＊''  
   ELSE ''''  
@@ -226,6 +340,9 @@ SET @SQL5 = ',CASE WHEN DATEDIFF(DAY, (CONVERT(VARCHAR(4),(YEAR(''2012/12/01'') 
                      THEN (''0'' + CONVERT(VARCHAR(2),DAY(OME.生年月日)))  
                      ELSE CONVERT(VARCHAR(2),DAY(OME.生年月日))  
                      END                             AS ''生年の日'''   
+
+--2019/04/22 10113982 宋家軍 増加 end 
+
   
 --六．会社情報欄  
   
