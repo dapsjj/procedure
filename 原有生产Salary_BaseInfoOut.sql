@@ -10,12 +10,13 @@ GO
 
                  --************************************************* --  
 --  作成者　10004211　　作成日　2007/11/22      --  
-  
+--MODIFYBY:宋家軍
+--MODIFYDATE:2019/04/22(変更内容:令和年号の調整)  
 --  機能： 給与システムの給与明細ペーパーレス化について、給与支払基本情報取得    --  
 --exec Salary_BaseInfoOut '2011/09','1','3','1','107',14  
 --************************************************* --  
   
-CREATE                PROCEDURE [dbo].[Salary_BaseInfoOut]  
+ALTER                PROCEDURE [dbo].[Salary_BaseInfoOut]  
   
 @YearMonth         VARCHAR(10),           --　支給年月  
 @CompanyCode    VARCHAR(10),           --　会社区分フラグ：　1 TRIAL　3 SLS  
@@ -521,7 +522,8 @@ where Company_code_OBIC=@CompanyCode
   
   
 ---------------------------------給与支給年月情報取得-----------------------------------  
-  
+/*  
+--2019/04/22 10113982 宋家軍 抹消 begin
 if @YearMonth>='1989/01'  
 begin  
 select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
@@ -530,10 +532,27 @@ else
 begin  
 select '昭和'+convert(varchar,substring(convert(varchar(4),@YearMonth),3,4)-25)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
 end  
+--2019/04/22 10113982 宋家軍 抹消 end
+*/  
   
-  
+--2019/04/22 10113982 宋家軍 増加 begin
+if @YearMonth>='2019/05'
+begin  
+select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
+end 
+else if @YearMonth>='1989/01' and @YearMonth<='2019/04'
+begin  
+select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
+end  
+else if @YearMonth>='1926/01' and @YearMonth<='1988/12'
+begin  
+select '昭和'+convert(varchar,convert(varchar(4),@YearMonth)-1925)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月分'  
+end  
+--2019/04/22 10113982 宋家軍 増加 end
+
 ---------------------------------給与支給年月日情報取得----------------------------------  
-  
+/*
+--2019/04/22 10113982 宋家軍 抹消 begin  
 if @YearMonth>='1989/01'  
 begin  
   
@@ -575,7 +594,71 @@ begin
  --where  CompanyCode=@CompanyCode and  convert(varchar(7),PayYearMonth,111)=@YearMonth   
  --         and EmployeeType=@EmployeeType and SalaryType=@SalaryType and EmployeeManagementID = @EmployeeManagementID  
 end  
+--2019/04/22 10113982 宋家軍 抹消 end
+*/  
+
+
+--2019/04/22 10113982 宋家軍 増加 begin
+if @YearMonth>='2019/05'  
+begin  
   
+ if (@EmployeeType = '1' and @SalaryType = '1' and @YearMonth > '2011/07/01')  
+ begin  
+  select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
+  from #TempSalaryInformation SalaryInformation  
+ end  
+ else if  (@EmployeeType in (3) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
+ begin  
+  select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
+  from #TempSalaryInformation SalaryInformation   
+ end   
+ else if  (@EmployeeType in (2) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
+ begin  
+  select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item8 +'日'  
+  from #TempSalaryInformation SalaryInformation  
+ end   
+ else  
+ begin  
+  select '令和'+convert(varchar,convert(varchar(4),@YearMonth)-2018)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item6 +'日'  
+  from #TempSalaryInformation SalaryInformation   
+ end  
+  
+end
+
+
+else if @YearMonth>='1989/01' and @YearMonth<='2019/04'
+begin  
+  
+ if (@EmployeeType = '1' and @SalaryType = '1' and @YearMonth > '2011/07/01')  
+ begin  
+  select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
+  from #TempSalaryInformation SalaryInformation  
+ end  
+ else if  (@EmployeeType in (3) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
+ begin  
+  select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item7 +'日'  
+  from #TempSalaryInformation SalaryInformation   
+ end   
+ else if  (@EmployeeType in (2) and @SalaryType = '1' and @YearMonth > '2011/08/01')  
+ begin  
+  select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item8 +'日'  
+  from #TempSalaryInformation SalaryInformation  
+ end   
+ else  
+ begin  
+  select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item6 +'日'  
+  from #TempSalaryInformation SalaryInformation   
+ end  
+  
+end  
+
+else  
+begin  
+ select '平成'+convert(varchar,convert(varchar(4),@YearMonth)-1988)+'年'+convert(varchar,convert(int,(substring(convert(varchar(7),@YearMonth),6,2))))+'月'+item6 +'日'  
+ from #TempSalaryInformation SalaryInformation  
+end  
+--2019/04/22 10113982 宋家軍 増加 end
+
 --------------------------------------所属情報取得-----------------------------------------  
   
 begin  
@@ -612,7 +695,7 @@ from mstCompanyName
 where Company_code_OBIC=@CompanyCode
       
   
-  
+
   
   
   
