@@ -1,12 +1,13 @@
 USE [dbkintai]
 GO
 
-/****** Object:  StoredProcedure [dbo].[NewTimeCard_EmployeeOverTimeLimitSendEmail]    Script Date: 2019/05/16 10:44:27 ******/
+/****** Object:  StoredProcedure [dbo].[NewTimeCard_EmployeeOverTimeLimitSendEmail]    Script Date: 2019/05/16 11:04:53 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -29,7 +30,7 @@ BEGIN
 	insert into NTE_KintaiEmployeeOverTimeLimitNew_History --insert into NTE_KintaiEmployeeOverTimeLimitNew_History
 	select * from #ForSendEmail
 
-	select * from #ForSendEmail
+	--select * from #ForSendEmail
 
 
 
@@ -66,8 +67,8 @@ CREATE TABLE #info
 (
 		[EmployeeCode] [int] ,
 		[EmployeeName] [nvarchar](800) ,
-		[EmployeeCD] [int] ,
-		[OverTimeMessageFlg] [nvarchar](800),--leader
+		[EmployeeCD] [int] ,  --leader
+		[OverTimeMessageFlg] [nvarchar](800),
 		[OverTimeMessage] [nvarchar](800),
 		[Type][nvarchar](20)
 )
@@ -140,6 +141,7 @@ END
 
 
 END
+
 
 
 GO
