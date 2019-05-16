@@ -72,27 +72,25 @@ namespace TcclMail
 						topicContent += "<BR>";
 					}
 					
-                    for (int i = 0; i < myDataSet.Tables[j].Rows.Count; i++)
-                    {
-                        
-                        //string employees = myDataSet.Tables[j].Rows[i]["employees"].ToString();
-
 						topicContent += "<BR>";
 						topicContent += "<table style=\"padding-left:30px\">";
 						topicContent += "<tr>";
 						topicContent += "<td>社員CD</td>";
 						topicContent += "<td>氏名</td>";						
 						topicContent += "</tr>";
+						
+                    for (int i = 0; i < myDataSet.Tables[j].Rows.Count; i++)
+                    {				
 						topicContent += "<tr>";
 						topicContent += "<td>" + myDataSet.Tables[j].Rows[i]["EmployeeCode"].ToString() + "</td>";
 						topicContent += "<td>" + myDataSet.Tables[j].Rows[i]["EmployeeName"].ToString() + "</td>";
 						topicContent += "</tr>";
+                    }
+											
 						topicContent += "</table>";
                         topicContent += "<BR>";
 						
                         topicContent += "<div>" + OverTimeMessage + "</div>";
-  
-                    }
 					
 					if (myDataSet.Tables[j].Rows.Count > 0){//データがあればメールします。
 						string str_mail = TC.AddOtherSystemTopicInfo(blockID, topicTypeID, topicCreaterCD, topicTitle, topicContent, fileIDs, receivers, doEndTime, importanceID, isPush, isOnlyReceivers, tagID, _tagNM, systemName, appKey);
