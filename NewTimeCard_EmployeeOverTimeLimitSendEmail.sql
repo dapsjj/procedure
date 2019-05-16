@@ -1,12 +1,14 @@
 USE [dbkintai]
 GO
 
-/****** Object:  StoredProcedure [dbo].[NewTimeCard_EmployeeOverTimeLimitSendEmail]    Script Date: 2019/05/16 11:04:53 ******/
+/****** Object:  StoredProcedure [dbo].[NewTimeCard_EmployeeOverTimeLimitSendEmail]    Script Date: 2019/05/16 16:12:08 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
+
 
 
 
@@ -51,7 +53,7 @@ SELECT
 	[CreateDate]
 INTO #NTE_KintaiEmployeeOverTimeLimitNew
 FROM
-	dbkintai.dbo.NTE_KintaiEmployeeOverTimeLimitNew
+	dbkintai.dbo.NTE_KintaiEmployeeOverTimeLimitNew ----------------------------导入换表
    --#ForSendEmail
 ------------------------------------------------------------------------------------------
   DECLARE @MSG1 nvarchar(100) ='今月の残業時間が35時間を超えています。残業時間の調整をして下さい。' 
@@ -122,25 +124,52 @@ DECLARE @Countrow int
 DECLARE @EmployeeCD int
 DECLARE @OverTimeMessageFlg nvarchar(800)
 
-SELECT @Countrow= COUNT(1) FROM #LDR
+----planB S
+--IF EXISTS (SELECT * FROM tempdb..sysobjects WHERE id=object_id('tempdb..#infoall'))
+--DROP TABLE #infoall
+--CREATE TABLE #infoall
+--(
 
+--		[EmployeeCD] [int], 
+--		[OverTimeMessageFlg] [nvarchar](800),
+--		[OverTimeMessage] [nvarchar](800),
+--		[Str] [nvarchar](max)
+--)
+     
+--DECLARE @str nvarchar(max)
+----planB E
+
+
+
+SELECT @Countrow= COUNT(1) FROM #LDR
 WHILE @Countrow>0
 BEGIN
 
  SELECT TOP 1 @EmployeeCD=EmployeeCD,@OverTimeMessageFlg=OverTimeMessageFlg FROM #LDR
+----planA S
  SELECT *  FROM #info WHERE EmployeeCD=@EmployeeCD AND  OverTimeMessageFlg=@OverTimeMessageFlg
+----planA E
+
+----planB S
+ --SELECT @str= stuff((SELECT ','+CONVERT(VARCHAR,EmployeeCode)+':'+CONVERT(VARCHAR,EmployeeName) FROM #info WHERE EmployeeCD=@EmployeeCD AND  OverTimeMessageFlg=@OverTimeMessageFlg FOR xml path('')),1,1,'')
+ --INSERT INTO #infoall
+ --SELECT DISTINCT  EmployeeCD,OverTimeMessageFlg,OverTimeMessage,@str FROM #info WHERE  EmployeeCD=@EmployeeCD AND  OverTimeMessageFlg=@OverTimeMessageFlg
+----planB E
+
  DELETE FROM #LDR
  WHERE EmployeeCD=@EmployeeCD AND  OverTimeMessageFlg=@OverTimeMessageFlg
  SELECT @Countrow= COUNT(1) FROM #LDR
 
 END
 
-
-
-
+----planB S
+--SELECT  * FROM #infoall
+----planB E
 
 
 END
+
+
 
 
 
