@@ -57,8 +57,8 @@ namespace TcclMail
 					string appKey = "664b54dfb19c87926c56dd086ba68a7a15ca11511c252eb57fff22cc3f7d65993d4aed427bdabafa550a7028c04e4a912de6c34fe972e4d9130bfdaf22a968f3"//use for test
 					//receivers = myDataSet.Tables[j].Rows[0]["EmployeeCD"].ToString();//一番目の上司を獲得する
 					receivers = "E10113982";
-					string employeeCode = myDataSet.Tables[j].Rows[i]["EmployeeCode"].ToString();
-					string employeeName = myDataSet.Tables[j].Rows[i]["EmployeeName"].ToString();
+					//string employeeCode = myDataSet.Tables[j].Rows[i]["EmployeeCode"].ToString();
+					//string employeeName = myDataSet.Tables[j].Rows[i]["EmployeeName"].ToString();
 					string OverTimeMessage = myDataSet.Tables[j].Rows[0]["OverTimeMessage"].ToString();//一番目のOverTimeMessageを獲得する
 					string OverTimeMessageFlg = myDataSet.Tables[j].Rows[0]["OverTimeMessageFlg"].ToString();//一番目のOverTimeMessageFlgを獲得する
 					if (OverTimeMessageFlg == "2")
