@@ -45,7 +45,8 @@ namespace TcclMail
 					string fileIDs = "";
 					string receivers = "";
 					//string doEndTime = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd");
-                    string doEndTime = DateTime.Now.ToString("yyyy-MM-dd");
+                    //string doEndTime = DateTime.Now.ToString("yyyy-MM-dd");
+                    string doEndTime = "";
 					string importanceID = "1";
 					string isPush = "0";
 					string isOnlyReceivers = "0";
@@ -54,11 +55,11 @@ namespace TcclMail
 					//string systemName = "AsEmployeeUpdate";//dingmingguang
                     //string appKey = "1e85bfb42d296646db1a026da6950d02164f3444c58ed3b0a60c8e9dfe0c4eedce17f6e2b975187f5623bf72428f1da7be97f56c7ddfc6cfc3b819db9ac72a33";//dingmingguang
 
-                    //string systemName = "overtimecheck";
-                    //string appKey = "664b54dfb19c87926c56dd086ba68a7a15ca11511c252eb57fff22cc3f7d65993d4aed427bdabafa550a7028c04e4a912de6c34fe972e4d9130bfdaf22a968f3";//use for test
+                    string systemName = "overtimecheck";
+                    string appKey = "664b54dfb19c87926c56dd086ba68a7a15ca11511c252eb57fff22cc3f7d65993d4aed427bdabafa550a7028c04e4a912de6c34fe972e4d9130bfdaf22a968f3";//use for test
 
-                    string systemName = "Web_OsechiCakeOrder";//cuiweixia
-                    string appKey = "6869a849a9dd3f6e84a7c06c1eaf7c7803acd1bd34f7a912a37077d172406371d6001eddcb15b89b5594742f29449ca2b543508a6d46458271dca687c34a3001";//cuiweixia
+                    //string systemName = "Web_OsechiCakeOrder";//cuiweixia
+                    //string appKey = "6869a849a9dd3f6e84a7c06c1eaf7c7803acd1bd34f7a912a37077d172406371d6001eddcb15b89b5594742f29449ca2b543508a6d46458271dca687c34a3001";//cuiweixia
 
 					//receivers = "E" + myDataSet.Tables[j].Rows[0]["EmployeeCD"].ToString();//一番目の上司を獲得する
 					receivers = "E10113982";
@@ -68,17 +69,16 @@ namespace TcclMail
 					string OverTimeMessageFlg = myDataSet.Tables[j].Rows[0]["OverTimeMessageFlg"].ToString();//一番目のOverTimeMessageFlgを獲得する
 					if (OverTimeMessageFlg == "2")
 					{
-						topicContent = "<div style='color:red'>※特別条項 期限間近</div>";
-						topicContent += "<BR>";
+						topicContent = "<div style=\"color:red\">※特別条項 期限間近</div>";
+                        topicContent += "<br/>";
 					}
 					else
 					{
-						topicContent = "<div style='color:red'>※過重労働 調整指示</div>";
-						topicContent += "<BR>";
+                        topicContent = "<div style=\"color:red\">※過重労働 調整指示</div>";
+                        topicContent += "<br/>";
 					}
 					
-						topicContent += "<BR>";
-						topicContent += "<table style=\"padding-left:30px\">";
+                        topicContent += "<table style=\"padding-left:30px\">";
 						topicContent += "<tr>";
 						topicContent += "<td>社員CD</td>";
 						topicContent += "<td>氏名</td>";						
@@ -93,7 +93,7 @@ namespace TcclMail
                     }
 											
 						topicContent += "</table>";
-                        topicContent += "<BR>";
+                        topicContent += "<br/>";
 						
                         topicContent += "<div>" + OverTimeMessage + "</div>";
 					
