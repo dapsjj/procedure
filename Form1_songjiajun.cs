@@ -40,7 +40,7 @@ namespace TcclMail
 					string topicTypeID = "3";//作業指示
 					//string topicCreaterCD = "99000109";
 					string topicCreaterCD = "10113982";
-                    string topicTitle = "prompt";
+                    string topicTitle = "残業時間調整指示";
 					string topicContent = "";
 					string fileIDs = "";
 					string receivers = "";
@@ -62,7 +62,7 @@ namespace TcclMail
                     //string appKey = "6869a849a9dd3f6e84a7c06c1eaf7c7803acd1bd34f7a912a37077d172406371d6001eddcb15b89b5594742f29449ca2b543508a6d46458271dca687c34a3001";//cuiweixia
 
 					//receivers = "E" + myDataSet.Tables[j].Rows[0]["EmployeeCD"].ToString();//一番目の上司を獲得する
-					receivers = "E10113982";
+                    receivers = "E10113982";
 					//string employeeCode = myDataSet.Tables[j].Rows[i]["EmployeeCode"].ToString();
 					//string employeeName = myDataSet.Tables[j].Rows[i]["EmployeeName"].ToString();
 					string OverTimeMessage = myDataSet.Tables[j].Rows[0]["OverTimeMessage"].ToString();//一番目のOverTimeMessageを獲得する
