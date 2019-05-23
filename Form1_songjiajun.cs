@@ -12,6 +12,10 @@ using System.Data.SqlClient;
 using System.Collections;
 using DBconnectionspace;
 
+using System.IO;
+using System.Reflection;
+
+
 
 namespace TcclMail
 {
@@ -28,18 +32,23 @@ namespace TcclMail
         {
             try
             {
+                
                 TcclClient TC = new TcclClient();
                 member.Open("dbkintai");
                 string planCon = "EXEC NewTimeCard_EmployeeOverTimeLimitSendEmail";
 
                 member.selectSql(planCon);
                 DataSet myDataSet = member.ds;
+
+                WriteLog(myDataSet.Tables.Count.ToString());//log
+
                 for (int j = 0; j < myDataSet.Tables.Count; j++){
 					
 					string blockID = "0";
 					string topicTypeID = "3";//作業指示
 					//string topicCreaterCD = "99000109";
-					string topicCreaterCD = "10113982";
+					//string topicCreaterCD = "10113982";
+                    string topicCreaterCD = "10123238";//三井
                     string topicTitle = "残業時間調整指示";
 					string topicContent = "";
 					string fileIDs = "";
@@ -61,8 +70,8 @@ namespace TcclMail
                     //string systemName = "Web_OsechiCakeOrder";//cuiweixia
                     //string appKey = "6869a849a9dd3f6e84a7c06c1eaf7c7803acd1bd34f7a912a37077d172406371d6001eddcb15b89b5594742f29449ca2b543508a6d46458271dca687c34a3001";//cuiweixia
 
-					//receivers = "E" + myDataSet.Tables[j].Rows[0]["EmployeeCD"].ToString();//一番目の上司を獲得する
-                    receivers = "E10113982";
+					receivers = "E" + myDataSet.Tables[j].Rows[0]["EmployeeCD"].ToString();//一番目の上司を獲得する
+                    //receivers = "E10113982";
 					//string employeeCode = myDataSet.Tables[j].Rows[i]["EmployeeCode"].ToString();
 					//string employeeName = myDataSet.Tables[j].Rows[i]["EmployeeName"].ToString();
 					string OverTimeMessage = myDataSet.Tables[j].Rows[0]["OverTimeMessage"].ToString();//一番目のOverTimeMessageを獲得する
@@ -98,7 +107,18 @@ namespace TcclMail
                         topicContent += "<div>" + OverTimeMessage + "</div>";
 					
 					if (myDataSet.Tables[j].Rows.Count > 0){//データがあればメールします。
-						string str_mail = TC.AddOtherSystemTopicInfo(blockID, topicTypeID, topicCreaterCD, topicTitle, topicContent, fileIDs, receivers, doEndTime, importanceID, isPush, isOnlyReceivers, tagID, _tagNM, systemName, appKey);
+
+                        DateTime beforDT = System.DateTime.Now;
+                        string str_mail = TC.AddOtherSystemTopicInfo(blockID, topicTypeID, topicCreaterCD, topicTitle, topicContent, fileIDs, receivers, doEndTime, importanceID, isPush, isOnlyReceivers, tagID, _tagNM, systemName, appKey);
+                        DateTime afterDT = System.DateTime.Now;
+                        TimeSpan ts = afterDT.Subtract(beforDT);
+                        string myTime = ts.ToString();
+                        WriteLog(myTime);
+                        WriteLog(receivers.ToString());
+
+
+
+						
 					}
                 }
 
@@ -106,7 +126,7 @@ namespace TcclMail
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);  
+ 
             }
             finally
             {
@@ -119,6 +139,50 @@ namespace TcclMail
             SendMail();
             this.Close();
         }
+
+
+
+        //20190522 10113982 add
+
+        public void WriteLog(string msg)
+        {
+            string filePath = AppDomain.CurrentDomain.BaseDirectory + "Log";
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            string logPath = AppDomain.CurrentDomain.BaseDirectory + "Log\\" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+            try
+            {
+                using (StreamWriter sw = File.AppendText(logPath))
+                {
+                    sw.WriteLine("Message：" + msg);
+                    sw.WriteLine("Time：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                    sw.WriteLine("**************************************************");
+                    sw.WriteLine();
+                    sw.Flush();
+                    sw.Close();
+                    sw.Dispose();
+                }
+            }
+            catch (IOException e)
+            {
+                using (StreamWriter sw = File.AppendText(logPath))
+                {
+                    sw.WriteLine("异常：" + e.Message);
+                    sw.WriteLine("时间：" + DateTime.Now.ToString("yyy-MM-dd HH:mm:ss"));
+                    sw.WriteLine("**************************************************");
+                    sw.WriteLine();
+                    sw.Flush();
+                    sw.Close();
+                    sw.Dispose();
+                }
+            }
+        }
+        //20190522 10113982 add
+
+
+
 
 
     }
